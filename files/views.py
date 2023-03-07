@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from .models import UploadFileForm
-
+from django.views.decorators.csrf import csrf_exempt
 import os
 
 # Create your views here.
@@ -9,11 +9,12 @@ import os
 def index(request):
     return render(request,"files/index.html")
 
-
+@csrf_exempt
 def upload(request):
     if request.method == 'POST':
         print(("+++++++++++++"))
         form = UploadFileForm(request.POST, request.FILES)
+        print(request.FILES)
         if form.is_valid():
             uploaded_file = UploadFileForm()
             uploaded_file.title = form.cleaned_data['title']
