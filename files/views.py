@@ -16,10 +16,10 @@ def index(request):
 def upload(request):
     # post request
     if request.method == "POST":
-        print(11111)
-        print(request)
+        print(request.POST)
         print(request.FILES)
-
+        # data = zip(request.POST, request.FILES['file'])
+        # print(list(data))
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()

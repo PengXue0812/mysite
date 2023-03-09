@@ -67,7 +67,8 @@
 
 <body>
 	<div id="app">
-		<el-form label-width="120px" ref="form" :rules="rules">
+        <template v-cloke>
+            		<el-form label-width="120px" ref="form" :rules="rules">
 			<!-- 上传文件 -->
 			<div v-for="item in dataList" class="upload-line">
 				<el-form-item label="上传文件" class="file-uploader">
@@ -95,6 +96,8 @@
 				<el-button type="plain" @click="submitForm" class="submit-button">提交</el-button>
 			</div>
 		</el-form>
+        </template>
+
 	</div>
 
 	<script src="https://unpkg.com/vue@2/dist/vue.js"></script>
@@ -134,18 +137,39 @@
 				uploadfile (file, fileList, item) {
 					fileList.splice(0, 1)
 					item.file = file
-					console.log(item.file)
+                    var reader = new FileReader();
+                    // reader.onload = function (e) {
+                    //     // console.log(e.target.result);
+                    // }
+                    reader.readAsText(file.raw);
+					// console.log(item.file)
 				},
 				// 提交表单
 				submitForm () {
 					console.log(this.dataList)
+                    console.log(this.dataList[0].file.raw)
 
 					// post请求
-					axios.post('http://127.0.0.1:8000/files/upload', {
-						data: this.dataList
-					})
-					// url跳转
-					window.location.href = 'http://127.0.0.1:8000/files/upload'
+                    let url = 'http://127.0.0.1:8000/files/upload'
+                    let params = new FormData()
+                    for(let i = 0; i < this.dataList.length; i++){
+                        params.append('file'+i, this.dataList[i].file.raw)
+                        params.append('timeStamp'+i, this.dataList[i].timeStamp)
+                    }
+					axios(
+                        {
+                            method: 'post',
+                            url: url,
+                            data: params,
+                            headers: {
+                                'Content-Type': 'form-data'
+                            }
+                        }
+                    ).then(res => {
+                        // console.log(res)
+                    }).catch(err => {
+                        // console.log(err)
+                    })
 				},
 			},
 		})
