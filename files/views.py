@@ -1,28 +1,30 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
+from django.http import HttpResponseRedirect
 from .models import UploadFileForm
 from django.views.decorators.csrf import csrf_exempt
 import os
 
 # Create your views here.
 
+
 def index(request):
-    return render(request,"files/index.html")
+    return render(request, "files/index.html")
+
 
 @csrf_exempt
 def upload(request):
-    if request.method == 'POST':
-        print(("+++++++++++++"))
-        form = UploadFileForm(request.POST, request.FILES)
+    # post request
+    if request.method == "POST":
+        print(11111)
+        print(request)
         print(request.FILES)
+
+        form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
-            uploaded_file = UploadFileForm()
-            uploaded_file.title = form.cleaned_data['title']
-            uploaded_file.file = form.cleaned_data['file']
-            uploaded_file.save()
-            handle_uploaded_file(uploaded_file.file)
-            return HttpResponse('File uploaded successfully')
+            form.save()
+            return redirect("files:index")
+    # get request
     else:
-        print("---------------")
         form = UploadFileForm()
-    return render(request, 'files/index.html', {'form': form})
+    return render(request, "files/success.html", {"form": form})

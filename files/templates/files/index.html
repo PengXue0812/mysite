@@ -1,67 +1,155 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<link
-			rel="stylesheet"
-			href="https://unpkg.com/element-ui/lib/theme-chalk/index.css"
-		/>
-		<style></style>
-		<title>Document</title>
-	</head>
-	<body>
-		<div id="app">
-			<el-upload
-				class="upload-demo"
-				ref="upload"
-				action=""
-				:on-preview="handlePreview"
-				:on-remove="handleRemove"
-				:file-list="fileList"
-				:auto-upload="false"
-			>
-				<el-button slot="trigger" size="small" type="primary"
-					>选取文件</el-button
-				>
-				<el-button
-					style="margin-left: 10px"
-					size="small"
-					type="success"
-					@click="submitUpload"
-					>上传到服务器</el-button
-				>
-				<div slot="tip" class="el-upload__tip">
-					请上传CSV文件
-				</div>
-			</el-upload>
-		</div>
 
-		<script src="https://unpkg.com/vue@2/dist/vue.js"></script>
-		<script src="https://unpkg.com/element-ui/lib/index.js"></script>
-		<script>
-			new Vue({
-				el: '#app',
-				data() {
-					return {
-						fileList: [
+<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css" />
+	<style>
+		#app {
+			width: 100%;
+			height: 100%;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+
+		.upload-line {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-bottom: 20px;
+		}
+
+		.el-form-item {
+			margin-bottom: 0;
+			margin-right: 30px;
+		}
+
+		.addline {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			margin-top: 20px;
+			border: 1px dashed #d2dce7;
+			cursor: pointer;
+		}
+
+		.addline:hover {
+			background-color: #f5f7fa;
+		}
+
+		.el-icon-plus {
+			font-size: 30px;
+			color: gray;
+		}
+
+		.submit {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			margin-top: 20px;
+		}
+
+		.file-uploader .el-upload {
+			width: 200px;
+			border: 1px dashed #d2dce7;
+			border-radius: 4px;
+		}
+
+		.file-uploader .el-upload:hover {
+			background-color: #f5f7fa;
+		}
+	</style>
+	<title>Document</title>
+</head>
+
+<body>
+	<div id="app">
+		<el-form label-width="120px" ref="form" :rules="rules">
+			<!-- 上传文件 -->
+			<div v-for="item in dataList" class="upload-line">
+				<el-form-item label="上传文件" class="file-uploader">
+					<el-upload action="" :on-change="(file,fileList)=>uploadfile(file, fileList, item)"
+						:show-file-list="false" :auto-upload="false" :limit="1">
+						<span v-text="item.file.name" v-if="item.file.name"></span>
+						<span v-else>选择文件</span>
+					</el-upload>
+				</el-form-item>
+
+				<!-- 输入时间戳 -->
+				<el-form-item label="输入时间戳">
+					<el-input v-model.number="item.timeStamp"></el-input>
+				</el-form-item>
+				<!-- 图标形式的删除行 -->
+				<el-button type="danger" icon="el-icon-delete"
+					@click="dataList.splice(dataList.indexOf(item),1)"></el-button>
+			</div>
+			<!-- 背景透明的添加行，图标形式 -->
+			<div class="addline" @click="dataList.push({file:{},timeStamp:0})">
+				<el-button type="text" icon="el-icon-plus"></el-button>
+			</div>
+			<!-- 提交表单 -->
+			<div class="submit">
+				<el-button type="plain" @click="submitForm" class="submit-button">提交</el-button>
+			</div>
+		</el-form>
+	</div>
+
+	<script src="https://unpkg.com/vue@2/dist/vue.js"></script>
+	<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	<script>
+		new Vue({
+			el: '#app',
+			data () {
+				return {
+					dataList: [
+						{
+							file: {},
+							timeStamp: 0,
+						},
+					],
+					rules: {
+						file: [
+							{
+								required: true,
+								message: '请选择文件',
+								trigger: 'change',
+							},
 						],
-					}
+						timeStamp: [
+							{
+								required: true,
+								message: '请输入时间戳',
+								trigger: 'change',
+							},
+						],
+					},
+				}
+			},
+			methods: {
+				// 上传文件
+				uploadfile (file, fileList, item) {
+					fileList.splice(0, 1)
+					item.file = file
+					console.log(item.file)
 				},
-				methods: {
-					submitUpload() {
-						this.$refs.upload.submit()
-						this.$refs.upload.clearFiles()
-					},
-					handleRemove(file, fileList) {
-						console.log(file, fileList)
-					},
-					handlePreview(file) {
-						console.log(file)
-					},
+				// 提交表单
+				submitForm () {
+					console.log(this.dataList)
+
+					// post请求
+					axios.post('http://127.0.0.1:8000/files/upload', {
+						data: this.dataList
+					})
+					// url跳转
+					window.location.href = 'http://127.0.0.1:8000/files/upload'
 				},
-			})
-		</script>
-	</body>
+			},
+		})
+	</script>
+</body>
+
 </html>
