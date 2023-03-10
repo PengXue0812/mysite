@@ -45,4 +45,10 @@ def upload(request):
                 f.write('  timestamp: ' + timestamp[i] + '\n')
         # 调用RobustSpot-master/main.py中的main函数
         main.main()
-    return render(request, "files/success.html")
+    # 将RobustSpot-master/result/result.csv中的数据读取出来，传递给前端
+    result = []
+    with open('RobustSpot_master/result/result.csv', 'r') as f:
+        for line in f.readlines():
+            result.append(line.strip().split(','))
+    print(result)
+    return render(request, "files/success.html", {'result': result})

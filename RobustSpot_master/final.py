@@ -1,5 +1,5 @@
-import mining
-import config.global_data as g_data
+import RobustSpot_master.mining as mining
+import RobustSpot_master.config.global_data as g_data
 
 
 def get_merge_res(top5_3iter):

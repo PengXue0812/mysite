@@ -1,15 +1,12 @@
-import sys
-sys.path.append('RobustSpot_master')
-import os
-import warnings
-import copy
-import yaml
+import RobustSpot_master.select_expand as select_expand
+import RobustSpot_master.mining as mining
+import RobustSpot_master.final as final
+import RobustSpot_master.config.global_data as g_data 
 import numpy as np
-import config.global_data as g_data
-import final
-import mining
-import select_expand
-
+import yaml
+import copy
+import warnings
+import os
 
 
 def cause_mining(dim1, dim2, anomaly_index):
@@ -82,7 +79,9 @@ def main():
         sorted_index = np.argsort(support_delta)[:5]
         final_root_cause = []
         for index in sorted_index:
-            final_root_cause.append(merge_res[index])
+            # final_root_cause.append(merge_res[index])
+            final_root_cause.append((merge_res[index], -support_delta[index]))
+
         g_data.final_res.append(final_root_cause)
         g_data.before_df_list = [None] * 7
         g_data.after_df_list = [None] * 7
@@ -96,7 +95,7 @@ def main():
     if not os.path.exists('result'):
         os.makedirs('result')
     # 覆盖写入
-    g_data.final_res.to_csv('result/result.csv',
+    g_data.final_res.to_csv('RobustSpot_master/result/result.csv',
                             mode='w', index=False, header=False)
 
 

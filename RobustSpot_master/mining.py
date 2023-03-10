@@ -3,7 +3,7 @@ import itertools
 from functools import reduce
 from operator import and_
 
-import config.global_data as g_data
+import RobustSpot_master.config.global_data as g_data
 
 
 def get_frequent_item_sets(df):
@@ -97,6 +97,7 @@ def mining(iter_index, confidence_threshold=0.8):
         for root_cause_item in root_cause
     ]
     support_delta = np.array(support_delta)
+    
     sorted_index = np.argsort(support_delta)[:5]
     mining_root_cause = []
     for index in sorted_index:

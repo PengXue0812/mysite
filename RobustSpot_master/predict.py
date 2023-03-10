@@ -1,5 +1,5 @@
 import pandas as pd
-import config.global_data as g_data
+import RobustSpot_master.config.global_data as g_data
 
 
 def get_predict_df(anomaly_index):

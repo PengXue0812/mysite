@@ -3,9 +3,9 @@ import pandas as pd
 from functools import reduce
 from operator import and_
 
-import config.global_data as g_data
-import predict
-import ID_CA
+import RobustSpot_master.config.global_data as g_data
+import RobustSpot_master.predict as predict
+import RobustSpot_master.ID_CA as ID_CA
 
 
 def drop_last_top(df, last_mining_root_cause):
