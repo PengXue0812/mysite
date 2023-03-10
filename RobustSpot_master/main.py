@@ -96,8 +96,9 @@ def main():
     if not os.path.exists('result'):
         os.makedirs('result')
 
-    # 写成json文件
-    g_data.final_res.to_json('RobustSpot_master/result/result.json')
+    # 写成json文件,自动处理换行
+    g_data.final_res.to_json('RobustSpot_master/result/result.json',
+                             orient='index', force_ascii=False, indent=4)
 
 
 if __name__ == '__main__':
