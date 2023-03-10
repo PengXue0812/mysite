@@ -1,7 +1,7 @@
 import RobustSpot_master.select_expand as select_expand
 import RobustSpot_master.mining as mining
 import RobustSpot_master.final as final
-import RobustSpot_master.config.global_data as g_data 
+import RobustSpot_master.config.global_data as g_data
 import numpy as np
 import yaml
 import copy
@@ -80,7 +80,8 @@ def main():
         final_root_cause = []
         for index in sorted_index:
             # final_root_cause.append(merge_res[index])
-            final_root_cause.append((merge_res[index], -support_delta[index]))
+            final_root_cause.append(
+                {"cause": merge_res[index], "support_delta": -support_delta[index]})
 
         g_data.final_res.append(final_root_cause)
         g_data.before_df_list = [None] * 7
@@ -94,9 +95,9 @@ def main():
     # 如果不存在result文件夹，则创建
     if not os.path.exists('result'):
         os.makedirs('result')
-    # 覆盖写入
-    g_data.final_res.to_csv('RobustSpot_master/result/result.csv',
-                            mode='w', index=False, header=False)
+
+    # 写成json文件
+    g_data.final_res.to_json('RobustSpot_master/result/result.json')
 
 
 if __name__ == '__main__':
