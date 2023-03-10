@@ -92,9 +92,6 @@ def main():
         g_data.final_res.loc[g_data.anomaly_list[anomaly_index]['data']] = [
             final_root_cause]
         print(f'{g_data.anomaly_list[anomaly_index]["data"]}')
-    # 如果不存在result文件夹，则创建
-    if not os.path.exists('result'):
-        os.makedirs('result')
 
     # 写成json文件,自动处理换行
     g_data.final_res.to_json('RobustSpot_master/result/result.json',
