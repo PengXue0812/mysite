@@ -67,36 +67,36 @@
 
 <body>
 	<div id="app">
-        <template v-cloke>
-            		<el-form label-width="120px" ref="form" :rules="rules">
-			<!-- 上传文件 -->
-			<div v-for="item in dataList" class="upload-line">
-				<el-form-item label="上传文件" class="file-uploader">
-					<el-upload action="" :on-change="(file,fileList)=>uploadfile(file, fileList, item)"
-						:show-file-list="false" :auto-upload="false" :limit="1">
-						<span v-text="item.file.name" v-if="item.file.name"></span>
-						<span v-else>选择文件</span>
-					</el-upload>
-				</el-form-item>
+		<template v-cloke>
+			<el-form label-width="120px" ref="form" :rules="rules">
+				<!-- 上传文件 -->
+				<div v-for="item in dataList" class="upload-line">
+					<el-form-item label="上传文件" class="file-uploader">
+						<el-upload action="" :on-change="(file,fileList)=>uploadfile(file, fileList, item)"
+							:show-file-list="false" :auto-upload="false" :limit="1">
+							<span v-text="item.file.name" v-if="item.file.name"></span>
+							<span v-else>选择文件</span>
+						</el-upload>
+					</el-form-item>
 
-				<!-- 输入时间戳 -->
-				<el-form-item label="输入时间戳">
-					<el-input v-model.number="item.timeStamp"></el-input>
-				</el-form-item>
-				<!-- 图标形式的删除行 -->
-				<el-button type="danger" icon="el-icon-delete"
-					@click="dataList.splice(dataList.indexOf(item),1)"></el-button>
-			</div>
-			<!-- 背景透明的添加行，图标形式 -->
-			<div class="addline" @click="dataList.push({file:{},timeStamp:0})">
-				<el-button type="text" icon="el-icon-plus"></el-button>
-			</div>
-			<!-- 提交表单 -->
-			<div class="submit">
-				<el-button type="plain" @click="submitForm" class="submit-button">提交</el-button>
-			</div>
-		</el-form>
-        </template>
+					<!-- 输入时间戳 -->
+					<el-form-item label="输入时间戳">
+						<el-input v-model.number="item.timestamp"></el-input>
+					</el-form-item>
+					<!-- 图标形式的删除行 -->
+					<el-button type="danger" icon="el-icon-delete"
+						@click="dataList.splice(dataList.indexOf(item),1)"></el-button>
+				</div>
+				<!-- 背景透明的添加行，图标形式 -->
+				<div class="addline" @click="dataList.push({file:{},timestamp:0})">
+					<el-button type="text" icon="el-icon-plus"></el-button>
+				</div>
+				<!-- 提交表单 -->
+				<div class="submit">
+					<el-button type="plain" @click="submitForm" class="submit-button">提交</el-button>
+				</div>
+			</el-form>
+		</template>
 
 	</div>
 
@@ -111,7 +111,7 @@
 					dataList: [
 						{
 							file: {},
-							timeStamp: 0,
+							timestamp: 0,
 						},
 					],
 					rules: {
@@ -122,7 +122,7 @@
 								trigger: 'change',
 							},
 						],
-						timeStamp: [
+						timestamp: [
 							{
 								required: true,
 								message: '请输入时间戳',
@@ -137,39 +137,39 @@
 				uploadfile (file, fileList, item) {
 					fileList.splice(0, 1)
 					item.file = file
-                    var reader = new FileReader();
-                    // reader.onload = function (e) {
-                    //     // console.log(e.target.result);
-                    // }
-                    reader.readAsText(file.raw);
+					var reader = new FileReader();
+					// reader.onload = function (e) {
+					//     // console.log(e.target.result);
+					// }
+					reader.readAsText(file.raw);
 					// console.log(item.file)
 				},
 				// 提交表单
 				submitForm () {
 					console.log(this.dataList)
-                    console.log(this.dataList[0].file.raw)
+					console.log(this.dataList[0].file.raw)
 
 					// post请求
-                    let url = 'http://127.0.0.1:8000/files/upload'
-                    let params = new FormData()
-                    for(let i = 0; i < this.dataList.length; i++){
-                        params.append('file'+i, this.dataList[i].file.raw)
-                        params.append('timeStamp'+i, this.dataList[i].timeStamp)
-                    }
+					let url = 'http://127.0.0.1:8000/files/upload'
+					let params = new FormData()
+					for (let i = 0; i < this.dataList.length; i++) {
+						params.append('file', this.dataList[i].file.raw)
+						params.append('timestamp', this.dataList[i].timestamp)
+					}
 					axios(
-                        {
-                            method: 'post',
-                            url: url,
-                            data: params,
-                            headers: {
-                                'Content-Type': 'form-data'
-                            }
-                        }
-                    ).then(res => {
-                        // console.log(res)
-                    }).catch(err => {
-                        // console.log(err)
-                    })
+						{
+							method: 'post',
+							url: url,
+							data: params,
+							headers: {
+								'Content-Type': 'form-data'
+							}
+						}
+					).then(res => {
+						// console.log(res)
+					}).catch(err => {
+						// console.log(err)
+					})
 				},
 			},
 		})
