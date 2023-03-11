@@ -23,6 +23,9 @@ def main():
         'RobustSpot_master/config/anomaly.yaml', mode='r', encoding='utf-8')
 
     # anomaly_config = open(g_data.anomaly_config, mode='r', encoding='utf-8')
+    # final_res = pd.DataFrame(columns=['predict_cause']) 清空之前的结果
+    g_data.final_res = g_data.final_res.iloc[0:0]
+
     g_data.anomaly_list = yaml.load(
         anomaly_config.read(), Loader=yaml.FullLoader)
     for anomaly_index in range(len(g_data.anomaly_list)):
