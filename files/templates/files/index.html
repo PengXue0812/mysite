@@ -2,178 +2,296 @@
 <html lang="en">
 
 <head>
-	<meta charset="UTF-8" />
-	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css" />
-	<style>
-		#app {
-			width: 100%;
-			height: 100%;
-			display: flex;
-			justify-content: center;
-			align-items: center;
-		}
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css" />
+    <style>
+        #app {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-		.upload-line {
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			margin-bottom: 20px;
-		}
+        .upload-line {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
 
-		.el-form-item {
-			margin-bottom: 0;
-			margin-right: 30px;
-		}
+        .el-form-item {
+            margin-bottom: 0;
+            margin-right: 30px;
+        }
 
-		.addline {
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			margin-top: 20px;
-			border: 1px dashed #d2dce7;
-			cursor: pointer;
-		}
+        .addline {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+            border: 1px dashed #d2dce7;
+            cursor: pointer;
+        }
 
-		.addline:hover {
-			background-color: #f5f7fa;
-		}
+        .addline:hover {
+            background-color: #f5f7fa;
+        }
 
-		.el-icon-plus {
-			font-size: 30px;
-			color: gray;
-		}
+        .el-icon-plus {
+            font-size: 30px;
+            color: gray;
+        }
 
-		.submit {
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			margin-top: 20px;
-		}
+        .submit {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
 
-		.file-uploader .el-upload {
-			width: 200px;
-			border: 1px dashed #d2dce7;
-			border-radius: 4px;
-		}
+        .file-uploader .el-upload {
+            width: 200px;
+            border: 1px dashed #d2dce7;
+            border-radius: 4px;
+        }
 
-		.file-uploader .el-upload:hover {
-			background-color: #f5f7fa;
-		}
-	</style>
-	<title>Document</title>
+        .file-uploader .el-upload:hover {
+            background-color: #f5f7fa;
+        }
+
+        .line{
+            background-color: #d2dce7;
+            border-radius: 3px;
+            line-height: 35px;
+            font-size: 25px;
+            padding:10px;
+            padding-left: 20px;
+            
+        }
+    </style>
+    <title>Document</title>
 </head>
 
 <body>
-	<div id="app">
-		<template v-cloke>
-			<el-form label-width="120px" ref="form" :rules="rules">
-				<!-- 上传文件 -->
-				<div v-for="item in dataList" class="upload-line">
-					<el-form-item label="上传文件" class="file-uploader">
-						<el-upload action="" :on-change="(file,fileList)=>uploadfile(file, fileList, item)"
-							:show-file-list="false" :auto-upload="false" :limit="1">
-							<span v-text="item.file.name" v-if="item.file.name"></span>
-							<span v-else>选择文件</span>
-						</el-upload>
-					</el-form-item>
+    <div id="app">
+        <template v-cloke>
+            <div id="upload-page" v-if="uploadPage">
+                <el-form label-width="120px" ref="form" :rules="rules">
+                    <!-- 上传文件 -->
+                    <div v-for="item in dataList" class="upload-line">
+                        <el-form-item label="上传文件" class="file-uploader">
+                            <el-upload action="" :on-change="(file,fileList)=>uploadfile(file, fileList, item)"
+                                :show-file-list="false" :auto-upload="false" :limit="1">
+                                <span v-text="item.file.name" v-if="item.file.name"></span>
+                                <span v-else>选择文件</span>
+                            </el-upload>
+                        </el-form-item>
 
-					<!-- 输入时间戳 -->
-					<el-form-item label="输入时间戳">
-						<el-input v-model.number="item.timestamp"></el-input>
-					</el-form-item>
-					<!-- 图标形式的删除行 -->
-					<el-button type="danger" icon="el-icon-delete"
-						@click="dataList.splice(dataList.indexOf(item),1)"></el-button>
-				</div>
-				<!-- 背景透明的添加行，图标形式 -->
-				<div class="addline" @click="dataList.push({file:{},timestamp:0})">
-					<el-button type="text" icon="el-icon-plus"></el-button>
-				</div>
-				<!-- 提交表单 -->
-				<div class="submit">
-					<el-button type="plain" @click="submitForm" class="submit-button">提交</el-button>
-				</div>
-			</el-form>
-		</template>
+                        <!-- 输入时间戳 -->
+                        <el-form-item label="输入时间戳">
+                            <el-input v-model.number="item.timestamp"></el-input>
+                        </el-form-item>
+                        <!-- 图标形式的删除行 -->
+                        <el-button type="danger" icon="el-icon-delete"
+                            @click="dataList.splice(dataList.indexOf(item),1)"></el-button>
+                    </div>
+                    <!-- 背景透明的添加行，图标形式 -->
+                    <div class="addline" @click="dataList.push({file:{},timestamp:''})">
+                        <el-button type="text" icon="el-icon-plus"></el-button>
+                    </div>
+                    <!-- 提交表单 -->
+                    <div class="submit">
+                        <el-button type="plain" @click="submitForm" class="submit-button">提交</el-button>
+                    </div>
+                </el-form>
+            </div>
+            <div id="result-page" v-else>
+                <div class="echart" v-for="item in results">
+                    <my-echarts :id="item.name" :mydata="item.data" />
+                </div>
+                <!-- 返回按钮 -->
+                <div class="submit">
+                    <el-button type="plain" @click="handleBack" class="submit-button">返回</el-button>
+                </div>
+            </div>
+        </template>
 
-	</div>
+    </div>
 
-	<script src="https://unpkg.com/vue@2/dist/vue.js"></script>
-	<script src="https://unpkg.com/element-ui/lib/index.js"></script>
-	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-	<script>
-		new Vue({
-			el: '#app',
-			data () {
-				return {
-					dataList: [
-						{
-							file: {},
-							timestamp: 0,
-						},
-					],
-					rules: {
-						file: [
-							{
-								required: true,
-								message: '请选择文件',
-								trigger: 'change',
-							},
-						],
-						timestamp: [
-							{
-								required: true,
-								message: '请输入时间戳',
-								trigger: 'change',
-							},
-						],
-					},
-				}
-			},
-			methods: {
-				// 上传文件
-				uploadfile (file, fileList, item) {
-					fileList.splice(0, 1)
-					item.file = file
-					var reader = new FileReader();
-					// reader.onload = function (e) {
-					//     // console.log(e.target.result);
-					// }
-					reader.readAsText(file.raw);
-					// console.log(item.file)
-				},
-				// 提交表单
-				submitForm () {
-					console.log(this.dataList)
-					console.log(this.dataList[0].file.raw)
+    <script src="https://unpkg.com/vue@2/dist/vue.js"></script>
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@4.8.0/dist/echarts.min.js"></script>
+    <!-- <script src="https://cdn.bootcdn.net/ajax/libs/vue-echarts/4.0.2/vue-echarts.min.js"></script> -->
+    <script>
+        // 声明一个组件
+        const MyEcharts = Vue.extend({
+            name: 'MyEcharts',
+            template: `<div>
+                <h2 v-text="id+'分析出的根因有：'"></h2>
+                <p class="line" v-for="item in mydata.predict_cause" v-text="item.cause.toString()"">
+                </p>
+                <h2>支持以下根因的值如下图所示：</h2>
+                <div :id="id" style="width: 900px;height:400px;">
+                    </div>
+                    </div>
+                    <hr/>`,
+            props: {
+                id: {
+                    type: String,
+                    default: 'mychart'
+                },
+                mydata: {
+                    type: Object,
+                    default: () => ({})
+                }
+            },
+            mounted () {
+                this.initChart()
+            },
+            methods: {
+                initChart () {
+                    console.log(this.id)
+                    console.log(this.mydata.predict_cause)
+                    let causes = []
+                    let supportDelta = []
+                    for (let i = 0; i < this.mydata.predict_cause.length; i++) {
+                        let c  = ''
+                        for (let j = 0; j < this.mydata.predict_cause[i].cause.length; j++) {
+                            c = this.mydata.predict_cause[i].cause[j].toString() + '\n'
+                        }
+                        causes.push(c)
+                        supportDelta.push(this.mydata.predict_cause[i].support_delta)
+                    }
+                    console.log(causes)
+                    console.log(supportDelta)
+                    var myChart = echarts.init(document.getElementById(this.id));
+                    // 绘制图表
+                    var option = {
+                        title: {
+                            text: this.id
+                        },
+                        tooltip: {},
+                        legend: {
+                            data: ['支持程度']
+                        },
+                        xAxis: {
+                            data: causes
+                        },
+                        yAxis: {},
+                        series: [
+                            {
+                                name: '支持程度',
+                                type: 'bar',
+                                data: supportDelta
+                            }
+                        ],
+                        axisLabel: {
+                            show: true, // 是否显示刻度标签，默认显示
+                            interval: 0, // 坐标轴刻度标签的显示间隔，在类目轴中有效；默认会采用标签不重叠的策略间隔显示标签；可以设置成0强制显示所有标签；如果设置为1，表示『隔一个标签显示一个标签』，如果值为2，表示隔两个标签显示一个标签，以此类推。
+                            rotate: 90, // 刻度标签旋转的角度，在类目轴的类目标签显示不下的时候可以通过旋转防止标签之间重叠；旋转的角度从-90度到90度
+                            inside: false, // 刻度标签是否朝内，默认朝外
+                        }
+                    }
+                    myChart.setOption(option);
+                }
+            }
+        }
+        )
 
-					// post请求
-					let url = 'http://127.0.0.1:8000/files/upload'
-					let params = new FormData()
-					for (let i = 0; i < this.dataList.length; i++) {
-						params.append('file', this.dataList[i].file.raw)
-						params.append('timestamp', this.dataList[i].timestamp)
-					}
-					axios(
-						{
-							method: 'post',
-							url: url,
-							data: params,
-							headers: {
-								'Content-Type': 'form-data'
-							}
-						}
-					).then(res => {
-						// console.log(res)
-					}).catch(err => {
-						// console.log(err)
-					})
-				},
-			},
-		})
-	</script>
+        new Vue({
+            el: '#app',
+            components: {
+                MyEcharts
+            },
+            data () {
+                return {
+                    dataList: [
+                        {
+                            file: {},
+                            timestamp: '',
+                        },
+                    ],
+                    rules: {
+                        file: [
+                            {
+                                required: true,
+                                message: '请选择文件',
+                                trigger: 'change',
+                            },
+                        ],
+                        timestamp: [
+                            {
+                                required: true,
+                                message: '请输入时间戳',
+                                trigger: 'change',
+                            },
+                        ],
+                    },
+                    uploadPage: true,
+                    results: []
+                }
+            },
+            methods: {
+                // 上传文件
+                uploadfile (file, fileList, item) {
+                    fileList.splice(0, 1)
+                    item.file = file
+                    var reader = new FileReader();
+                    // reader.onload = function (e) {
+                    //     // console.log(e.target.result);
+                    // }
+                    reader.readAsText(file.raw);
+                    // console.log(item.file)
+                },
+                // 提交表单
+                submitForm () {
+                    console.log('dataList', this.dataList)
+                    // console.log(this.dataList[0].file.raw)
+
+                    // post请求
+                    let url = 'http://127.0.0.1:8000/files/upload'
+                    let params = new FormData()
+                    for (let i = 0; i < this.dataList.length; i++) {
+                        params.append('file', this.dataList[i].file.raw)
+                        params.append('timestamp', this.dataList[i].timestamp)
+                    }
+                    axios(
+                        {
+                            method: 'post',
+                            url: url,
+                            data: params,
+                            headers: {
+                                'Content-Type': 'form-data'
+                            }
+                        }
+                    ).then(res => {
+                        console.log(res.data)
+                        for (key in res.data) {
+                            this.results.push({ name: key, data: res.data[key] })
+                        }
+                        console.log(this.keys)
+                        this.uploadPage = false
+
+                    }).catch(err => {
+                        console.log(err)
+                        alert('上传的文件或者时间戳有误')
+                        this.dataList.splice(0, this.dataList.length)
+                        this.dataList.push({ file: {}, timestamp: '' })
+                    })
+                },
+                handleBack () {
+                    this.uploadPage = true
+                    this.dataList.splice(0, this.dataList.length)
+                    this.dataList.push({ file: {}, timestamp: '' })
+                    this.results.splice(0, this.results.length)
+                }
+            },
+        })
+    </script>
 </body>
 
 </html>

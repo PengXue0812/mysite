@@ -94,6 +94,9 @@ def main():
         print(f'{g_data.anomaly_list[anomaly_index]["data"]}')
 
     # 写成json文件,自动处理换行
+    os.remove('RobustSpot_master/result/result.json')
+    f = open('RobustSpot_master/result/result.json','w')
+    f.close()
     g_data.final_res.to_json('RobustSpot_master/result/result.json',
                              orient='index', force_ascii=False, indent=4)
 

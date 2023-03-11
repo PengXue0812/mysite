@@ -39,16 +39,19 @@ def upload(request):
         print(file_name)
         # 将timestamp和file_name写入到RobustSpot-master/config/anomaly.yaml中
         # 如果文件不存在则创建，存在则覆盖写入
+        os.remove('RobustSpot_master/config/anomaly.yaml')
         with open('RobustSpot_master/config/anomaly.yaml', 'w') as f:
             for i in range(len(timestamp)):
                 f.write('- data: ' + file_name[i] + '\n')
                 f.write('  timestamp: ' + timestamp[i] + '\n')
+        # 清空result.json
+        # os.remove('RobustSpot_master/result/result.json')
         # 调用RobustSpot-master/main.py中的main函数
         main.main()
         # 将RobustSpot-master/result/result.json中的结果读取出来
         with open('RobustSpot_master/result/result.json', 'r') as f:
             result = f.read()
-
+        # print(result)
         return HttpResponse(result)
     else:
         return render(request, "files/success.html")
